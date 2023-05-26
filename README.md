@@ -1,2 +1,2 @@
 # labora-wallet
-Este proyecto consiste en la construcción de un servidor local en Go para manejar una billetera digital.
+Virtual wallet project, developed in the  labora-go bootcamp 
