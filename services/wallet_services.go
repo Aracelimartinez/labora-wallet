@@ -1,12 +1,16 @@
 package services
 
 import (
+	"labora-wallet/db"
 	"labora-wallet/models"
 )
 
 type WalletService struct {
-	DbHandler DBWalletHandler
+	DbHandler models.DbWalletHandler
 }
+
+var dbWalletHandler = &PostgresWalletDbHandler{Db: db.DbConn}
+var WS = &WalletService{DbHandler: dbWalletHandler}
 
 func (s *WalletService) CreateWallet(wallet models.Wallet) error {
 	return s.DbHandler.CreateWallet(wallet)

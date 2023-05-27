@@ -1,23 +1,33 @@
 package main
 
 import (
-	"labora-wallet/db"
 	"labora-wallet/controllers"
+	"labora-wallet/db"
 	"log"
-	"github.com/rs/cors"
+
 	"github.com/gorilla/mux"
+	"github.com/rs/cors"
 )
 
-func main()  {
+func main() {
 
-	router:= mux.NewRouter()
+	err := db.EstablishDbConnection()
+	if err != nil {
+		log.Fatal(err)
+	}
 
+	router := mux.NewRouter()
+
+	//Wallet endpoints
 	router.HandleFunc("/CreateWallet", controllers.CreateWallet).Methods("POST")
 	router.HandleFunc("/UpdateWallet", controllers.UpdateWallet).Methods("PUT")
 	router.HandleFunc("/DeleteWallet", controllers.DeleteWallet).Methods("DELETE")
 	router.HandleFunc("/WalletStatus", controllers.WalletStatus).Methods("GET")
 
-	// Configurar el middleware CORS
+	//User endpoints
+	router.HandleFunc("/CreateUser", controllers.CreateUser).Methods("POST")
+
+	// Configurate the middleware CORS
 	corsOptions := cors.New(cors.Options{
 		AllowedOrigins: []string{"http://localhost:5432"},
 		AllowedMethods: []string{"GET", "POST"},

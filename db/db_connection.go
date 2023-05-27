@@ -3,32 +3,27 @@ package db
 import (
 	"database/sql"
 	"fmt"
-	"net/http"
-	"time"
 	"log"
+	"net/http"
 	"os"
+	"time"
 
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq" // Driver de conexión con Postgres
 )
 
 type DbData struct {
-	Host   			string
-	Port   			string
-	DbName 			string
+	Host        string
+	Port        string
+	DbName      string
 	RolName     string
 	RolPassword string
 }
 
-var Db *sql.DB
-
-func init() {
-	fmt.Println("db_connection.go::init")
-	EstablishDbConnection()
-}
+var DbConn *sql.DB
 
 // Abre la conexión con la base de datos
-func EstablishDbConnection() (error) {
+func EstablishDbConnection() error {
 
 	dbData, err := LoadEnv()
 
@@ -38,21 +33,24 @@ func EstablishDbConnection() (error) {
 
 	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", dbData.Host, dbData.Port, dbData.RolName, dbData.RolPassword, dbData.DbName)
 
-	Db, err := sql.Open("postgres", psqlInfo)
+	db, err := sql.Open("postgres", psqlInfo)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	fmt.Println("Conexión exitosa a la base de datos:", Db)
+	DbConn = db
 
-	if err = Db.Ping(); err != nil {
-		Db.Close()
+	fmt.Println("Conexión exitosa a la base de datos:", DbConn)
+
+	if err = DbConn.Ping(); err != nil {
+		DbConn.Close()
 		log.Fatal(err)
 	}
 
 	return nil
 }
 
+// Carga los datos del archivo .env
 func LoadEnv() (DbData, error) {
 	var err error
 
@@ -62,21 +60,21 @@ func LoadEnv() (DbData, error) {
 	}
 
 	return DbData{
-		Host:    		 os.Getenv("HOST"),
-		Port:     	 os.Getenv("PORT"),
-		DbName:   	 os.Getenv("DB_NAME"),
-		RolName:  	 os.Getenv("ROL_NAME"),
+		Host:        os.Getenv("HOST"),
+		Port:        os.Getenv("PORT"),
+		DbName:      os.Getenv("DB_NAME"),
+		RolName:     os.Getenv("ROL_NAME"),
 		RolPassword: os.Getenv("ROL_PASSWORD"),
 	}, nil
 }
 
 // Inicia el servidor
 func StartServer(port string, router http.Handler) error {
-	server:= &http.Server {
-		Handler: router,
-		Addr: port,
+	server := &http.Server{
+		Handler:      router,
+		Addr:         port,
 		WriteTimeout: 15 * time.Second,
-		ReadTimeout: 15 * time.Second,
+		ReadTimeout:  15 * time.Second,
 	}
 
 	fmt.Printf("Strating server on port %s..\n", port)
