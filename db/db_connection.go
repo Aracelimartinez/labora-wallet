@@ -77,10 +77,10 @@ func StartServer(port string, router http.Handler) error {
 		ReadTimeout:  15 * time.Second,
 	}
 
-	fmt.Printf("Strating server on port %s..\n", port)
+	fmt.Printf("Iniciando el servidor en el puerto %s..\n", port)
 
 	if err := server.ListenAndServe(); err != nil {
-		return fmt.Errorf("error while starting up server: %v", err)
+		return fmt.Errorf("error al iniciar el servidor: %v", err)
 	}
 
 	return nil
