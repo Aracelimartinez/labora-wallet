@@ -1,9 +1,9 @@
 package models
 
 type DbWalletHandler interface {
-	CreateWallet(wallet Wallet) error
-	WalletStatus(id int) (Wallet, error)
-	UpdateWallet(wallet Wallet) error
+	CreateWallet(wallet *Wallet) error
+	WalletStatus(id int) (*Wallet, error)
+	UpdateWallet(wallet *Wallet) error
 	DeleteWallet(id int) error
 }
 

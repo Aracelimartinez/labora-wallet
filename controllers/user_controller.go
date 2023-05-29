@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"labora-wallet/models"
 	"labora-wallet/services"
@@ -14,6 +13,8 @@ import (
 func CreateUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
+	var err error
+
 	requestBody, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		log.Fatal(err)
@@ -24,26 +25,19 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 
 	err = json.Unmarshal(requestBody, &newUser)
 	if err != nil {
-		fmt.Print(err)
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
 	err = services.US.CreateUser(newUser)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
-		w.Write([]byte(fmt.Sprintf("Error al crear el usuário")))
-		return
-	}
-
-	responseBody, err := json.Marshal(fmt.Sprintf("Usuário creado con éxito!"))
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		w.Write([]byte("Error al crear el usuário"))
 		return
 	}
 
 	w.WriteHeader(http.StatusCreated)
-	w.Write(responseBody)
-
+	w.Write([]byte("Usuário creado con éxito!"))
 }
 
 // Función para actualizar una billetera
