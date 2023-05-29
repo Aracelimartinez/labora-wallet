@@ -6,20 +6,12 @@ import (
 	"labora-wallet/models"
 )
 
-type Use struct {
-	ID             int    `json:"id"`
-	UserName       string `json:"user_name"`
-	DocumentNumber string `json:"document_number"`
-	DocumentType   string `json:"document_type"`
-	Country        string `json:"country"`
-}
-
 type PostgresUserDbHandler struct {
 	Db *sql.DB
 }
 
+// Function to create an User in PostgreSQL database
 func (p *PostgresUserDbHandler) CreateUser(newUser models.User) error {
-	// Implementar la lógica para crear un user en la base de datos PostgreSQL
 	var err error
 
 	err = models.ValidateUser(&newUser)
@@ -43,18 +35,18 @@ func (p *PostgresUserDbHandler) CreateUser(newUser models.User) error {
 }
 
 // func (p *PostgresUserDbHandler) GetUser(id int) (models.User, error) {
-// 	// Implementar la lógica para obtener el status de un user de la base de datos PostgreSQL
+// // Function to get the User info in PostgreSQL database
 
 // 	return models.User{}, nil
 // }
 
 // func (p *PostgresUserDbHandler) UpdateUser(user models.User) error {
-// 	// Implementar la lógica para actualizar un user en la base de datos PostgreSQL
+// 	// Function to update an User in PostgreSQL database
 // 	return nil
 // }
 
 // func (p *PostgresUserDbHandler) DeleteUser(id int) error {
-// 	// Implementar la lógica para eliminar un user de la base de datos PostgreSQL
+// 	// Function to delete an User in PostgreSQL database
 
 // 	return nil
 // }

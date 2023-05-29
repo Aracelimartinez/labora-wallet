@@ -22,14 +22,16 @@ type PostgresWalletDbHandler struct {
 
 var ErrNoMatch = errors.New("Billetera no encontrada: Este id no existe")
 
-func (p *PostgresWalletDbHandler) CreateWallet(wallet *models.Wallet) error {
-	// Implementar la lógica para crear una wallet en la base de datos PostgreSQL
+// Function to create a wallet in PostgreSQL database
+func (p *PostgresWalletDbHandler) CreateWallet(wallet *models.Wallet, log *models.Log) error {
+
+
 
 	return nil
 }
 
+// Function to get the wallet status in PostgreSQL database
 func (p *PostgresWalletDbHandler) WalletStatus(id int) (*models.Wallet, error) {
-	// Implementar la lógica para obtener el status de una wallet de la base de datos PostgreSQL
 	var err error
 	var wallet models.Wallet
 
@@ -51,14 +53,14 @@ func (p *PostgresWalletDbHandler) WalletStatus(id int) (*models.Wallet, error) {
 	return &wallet, nil
 }
 
+// Function to update a wallet in PostgreSQL database
 func (p *PostgresWalletDbHandler) UpdateWallet(wallet *models.Wallet) error {
-	// Implementar la lógica para actualizar una wallet en la base de datos PostgreSQL
 
 	return nil
 }
 
+// Function to delete a wallet in PostgreSQL database
 func (p *PostgresWalletDbHandler) DeleteWallet(id int) error {
-	// Implementar la lógica para eliminar una wallet de la base de datos PostgreSQL
 	var err error
 
 	stmt, err := db.DbConn.Prepare("DELETE FROM wallets WHERE id = $1")

@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/joho/godotenv"
-	_ "github.com/lib/pq" // Driver de conexión con Postgres
+	_ "github.com/lib/pq"
 )
 
 type DbData struct {
@@ -22,7 +22,7 @@ type DbData struct {
 
 var DbConn *sql.DB
 
-// Abre la conexión con la base de datos
+// Open the conexion with the database
 func EstablishDbConnection() error {
 
 	dbData, err := LoadEnv()
@@ -50,7 +50,7 @@ func EstablishDbConnection() error {
 	return nil
 }
 
-// Carga los datos del archivo .env
+// Load the data of the .env file
 func LoadEnv() (DbData, error) {
 	var err error
 
@@ -68,7 +68,7 @@ func LoadEnv() (DbData, error) {
 	}, nil
 }
 
-// Inicia el servidor
+// Start the server
 func StartServer(port string, router http.Handler) error {
 	server := &http.Server{
 		Handler:      router,

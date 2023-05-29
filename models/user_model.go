@@ -8,6 +8,7 @@ type User struct {
 	DocumentNumber string `json:"document_number"`
 	DocumentType   string `json:"document_type"`
 	Country        string `json:"country"`
+	DateOfBirth    string `json:"date_of_birth"`
 }
 
 func ValidateUser(user *User) error {

@@ -9,7 +9,7 @@ import (
 	"net/http"
 )
 
-// Función para crear una billetera
+// Function to create an User
 func CreateUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
@@ -40,17 +40,17 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Usuário creado con éxito!"))
 }
 
-// Función para actualizar una billetera
+// Function to update an User
 // func UpdateUser(w http.ResponseWriter, r *http.Request) {
 
 // }
 
-// Función para excluir una billetera
+// Function to delete an User
 // func DeleteUser(w http.ResponseWriter, r *http.Request) {
 
 // }
 
-// Función para saber el status de la billetera
+// Function to get an User info
 // func GetUser(w http.ResponseWriter, r *http.Request) {
 
 // }
