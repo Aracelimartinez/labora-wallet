@@ -34,11 +34,11 @@ func (p *PostgresUserDbHandler) CreateUser(newUser *models.User) error {
 	return nil
 }
 
-// func (p *PostgresUserDbHandler) GetUser(id int) (models.User, error) {
-// // Function to get the User info in PostgreSQL database
+func (p *PostgresUserDbHandler) GetUser(id int) (models.User, error) {
+// Function to get the User info in PostgreSQL database
 
-// 	return models.User{}, nil
-// }
+	return models.User{}, nil
+}
 
 // func (p *PostgresUserDbHandler) UpdateUser(user models.User) error {
 // 	// Function to update an User in PostgreSQL database

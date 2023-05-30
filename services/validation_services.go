@@ -19,7 +19,14 @@ const (
 	contentType = "application/x-www-form-urlencoded"
 )
 
-func TryToCreateWallet(user models.User)(models.Log, error) {
+func TryToCreateWallet(userID int) (models.Log, error) {
+	var err error
+
+	user, err := US.GetUser(userID)
+	if err != nil {
+		return models.Log{}, err
+	}
+
 	canCreate, err := CheckIfCanCreateWallet(user)
 	if err != nil {
 		return models.Log{}, err
@@ -43,10 +50,13 @@ func CheckIfCanCreateWallet(user models.User) (bool, error) {
 
 	time.Sleep(5 * time.Second)
 
+
+
 	criminalRecordScore, err := getTruoraAPIRequest(checkID)
 	if err != nil {
 		return false, err
 	}
+
 	if criminalRecordScore < 1 {
 		return false, nil
 	}

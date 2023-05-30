@@ -16,9 +16,9 @@ func (s *UserService) CreateUser(user *models.User) error {
 	return s.DbHandler.CreateUser(user)
 }
 
-// func (s *UserService) GetUser(id int) (models.User, error) {
-// 	return s.DbHandler.GetUser(id)
-// }
+func (s *UserService) GetUser(id int) (models.User, error) {
+	return s.DbHandler.GetUser(id)
+}
 
 // func (s *UserService) UpdateUser(user models.User) error {
 // 	return s.DbHandler.UpdateUser(user)

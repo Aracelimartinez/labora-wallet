@@ -2,10 +2,8 @@ package controllers
 
 import (
 	"encoding/json"
-	"io/ioutil"
 	"labora-wallet/models"
 	"labora-wallet/services"
-	"log"
 	"net/http"
 	"strconv"
 
@@ -25,19 +23,16 @@ func CreateWallet(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Error al convertir id a entero"))
 	}
 
+	logCreated, err := services.TryToCreateWallet(userID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		w.Write([]byte("Error al validar la creación de la billetera"))
+		return
+	}
 
+	var newWallet models.Wallet
 
-
-
-	// var newWallet models.Wallet
-
-	// err = json.Unmarshal(requestBody, &newUser)
-	// if err != nil {
-	// 	http.Error(w, err.Error(), http.StatusBadRequest)
-	// 	return
-	// }
-
-	err = services.WS.CreateWallet(newWallet, newLog)
+	err = services.WS.CreateWallet(&newWallet, &logCreated)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		w.Write([]byte("Error al crear la billetera"))

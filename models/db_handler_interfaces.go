@@ -9,7 +9,7 @@ type DbWalletHandler interface {
 
 type DbUserHandler interface {
 	CreateUser(newUser *User) error
-	// GetUser(id int) (User, error)
+	GetUser(id int) (User, error)
 	// UpdateUser(user User) error
 	// DeleteUser(id int) error
 }
