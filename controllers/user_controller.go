@@ -29,7 +29,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = services.US.CreateUser(newUser)
+	err = services.US.CreateUser(&newUser)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		w.Write([]byte("Error al crear el usuário"))

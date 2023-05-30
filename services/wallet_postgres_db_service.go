@@ -20,10 +20,10 @@ type PostgresWalletDbHandler struct {
 // 	CreatedAt string  `json:"created_at"`
 // }
 
-var ErrNoMatch = errors.New("Billetera no encontrada: Este id no existe")
+var ErrNoMatch = errors.New("billetera no encontrada: Este id no existe")
 
 // Function to create a wallet in PostgreSQL database
-func (p *PostgresWalletDbHandler) CreateWallet(wallet *models.Wallet, log *models.Log) error {
+func (p *PostgresWalletDbHandler) CreateWallet(newWallet *models.Wallet, log *models.Log) error {
 
 
 

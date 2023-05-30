@@ -12,7 +12,7 @@ type UserService struct {
 var dbUserHandler = &PostgresUserDbHandler{Db: db.DbConn}
 var US = &UserService{DbHandler: dbUserHandler}
 
-func (s *UserService) CreateUser(user models.User) error {
+func (s *UserService) CreateUser(user *models.User) error {
 	return s.DbHandler.CreateUser(user)
 }
 

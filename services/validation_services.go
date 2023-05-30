@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/joho/godotenv"
 )
@@ -18,19 +19,18 @@ const (
 	contentType = "application/x-www-form-urlencoded"
 )
 
-func TryToCreateWallet(user models.User) error {
+func TryToCreateWallet(user models.User)(models.Log, error) {
 	canCreate, err := CheckIfCanCreateWallet(user)
 	if err != nil {
-
-		return err
+		return models.Log{}, err
 	}
-	if canCreate {
-		//Te creas log success
 
-		return nil
+	LogCreated, err := LS.CreateLog(&user, canCreate)
+	if err != nil {
+		return models.Log{}, err
 	}
-	//Te creas log rejected
-	return nil
+
+	return LogCreated, nil
 }
 
 // Function to handle the check_background consult at the Truora API
@@ -40,6 +40,8 @@ func CheckIfCanCreateWallet(user models.User) (bool, error) {
 	if err != nil {
 		return false, err
 	}
+
+	time.Sleep(5 * time.Second)
 
 	criminalRecordScore, err := getTruoraAPIRequest(checkID)
 	if err != nil {
@@ -132,7 +134,7 @@ func getTruoraAPIRequest(checkID string) (int, error) {
 }
 
 // Function to read the API_KEY in the .env file
-func getAPI_KEY() (string){
+func getAPI_KEY() string {
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("error al cargar el archivo .env: %w", err)

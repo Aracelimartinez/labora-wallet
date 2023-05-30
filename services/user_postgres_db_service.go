@@ -11,10 +11,10 @@ type PostgresUserDbHandler struct {
 }
 
 // Function to create an User in PostgreSQL database
-func (p *PostgresUserDbHandler) CreateUser(newUser models.User) error {
+func (p *PostgresUserDbHandler) CreateUser(newUser *models.User) error {
 	var err error
 
-	err = models.ValidateUser(&newUser)
+	err = models.ValidateUser(newUser)
 	if err != nil {
 		return err
 	}
