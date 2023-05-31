@@ -7,3 +7,5 @@ type Wallet struct {
 	LogID     int     `json:"log_id"`
 	CreatedAt string  `json:"created_at"`
 }
+
+

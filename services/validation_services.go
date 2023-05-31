@@ -17,13 +17,8 @@ const (
 	contentType = "application/x-www-form-urlencoded"
 )
 
-func TryToCreateWallet(userID int) (models.Log, error) {
+func TryToCreateWallet(user *models.User) (models.Log, error) {
 	var err error
-
-	user, err := US.GetUser(userID)
-	if err != nil {
-		return models.Log{}, fmt.Errorf("error al obtener el usuário: %w", err)
-	}
 
 	canCreate, err := CheckIfCanCreateWallet(user)
 	if err != nil {
@@ -122,7 +117,7 @@ func postTruoraAPIRequest(user *models.User) (string, error) {
 // Function to create a GET request in Truora API
 func getTruoraAPIRequest(checkID string) (int, error) {
 
-	req, err := http.NewRequest("GET", baseUrl+checkID, strings.NewReader(""))
+	req, err := http.NewRequest("GET", baseUrl +"/" + checkID, strings.NewReader(""))
 	if err != nil {
 		return 0, fmt.Errorf("error al crear la solicitud GET para Truora API: %w", err)
 	}

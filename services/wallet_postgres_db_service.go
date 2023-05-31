@@ -12,20 +12,27 @@ type PostgresWalletDbHandler struct {
 	Db *sql.DB
 }
 
-// type Wallet struct {
-// 	ID        int     `json:"id"`
-// 	Balance   float64 `json:"balance"`
-// 	Currency  string  `json:"currency"`
-// 	LogID     int     `json:"log_id"`
-// 	CreatedAt string  `json:"created_at"`
-// }
-
-var ErrNoMatch = errors.New("billetera no encontrada: Este id no existe")
+var errWalletNoMatch = errors.New("billetera no encontrada: Este id no existe")
 
 // Function to create a wallet in PostgreSQL database
-func (p *PostgresWalletDbHandler) CreateWallet(newWallet *models.Wallet, log *models.Log) error {
+func (p *PostgresWalletDbHandler) CreateWallet(user *models.User, log *models.Log) (error) {
+	var err error
+	var newWallet models.Wallet
 
+	newWallet.Currency = getCurrencyByCountry(user.Country)
+	newWallet.LogID = log.ID
 
+	stmt, err := db.DbConn.Prepare("INSERT INTO public.wallets(currency, log_id) VALUES ($1, $2)")
+	if err != nil {
+		return  err
+	}
+
+	defer stmt.Close()
+
+	_, err = stmt.Exec( newWallet.Currency, newWallet.LogID)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
@@ -45,7 +52,7 @@ func (p *PostgresWalletDbHandler) WalletStatus(id int) (*models.Wallet, error) {
 	row := stmt.QueryRow(id)
 	err = row.Scan(&wallet.ID, &wallet.Balance, &wallet.Currency, &wallet.LogID, &wallet.CreatedAt)
 	if err == sql.ErrNoRows {
-		return nil, ErrNoMatch
+		return nil, errWalletNoMatch
 	} else if err != nil {
 		return nil, err
 	}
@@ -85,4 +92,23 @@ func (p *PostgresWalletDbHandler) DeleteWallet(id int) error {
 	}
 
 	return nil
+}
+
+func getCurrencyByCountry(country string) string {
+	var currency string
+	switch country {
+	case "BR":
+		currency = "R$ - Reales"
+	case "PE":
+		currency = " S/ - Sol"
+	case "CO":
+		currency = "$ - Peso colombiano"
+	case "CL":
+		currency = "$ - Peso chileno"
+	case "MX":
+		currency = "$ - Peso mexicano"
+	case "CR":
+		currency = "₡ - Colón costarricense"
+		}
+	return currency
 }

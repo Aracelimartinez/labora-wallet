@@ -2,6 +2,7 @@ package services
 
 import (
 	"database/sql"
+	"errors"
 	"labora-wallet/db"
 	"labora-wallet/models"
 )
@@ -9,6 +10,8 @@ import (
 type PostgresUserDbHandler struct {
 	Db *sql.DB
 }
+
+var errUserNoMatch = errors.New("Usuário no encontrado: Este id no existe")
 
 // Function to create an User in PostgreSQL database
 func (p *PostgresUserDbHandler) CreateUser(newUser *models.User) error {
@@ -50,7 +53,7 @@ func (p *PostgresUserDbHandler) GetUser(id int) (*models.User, error) {
 	row := stmt.QueryRow(id)
 	err = row.Scan(&user.ID, &user.UserName, &user.DocumentNumber, &user.DocumentType, &user.Country, &user.CreatedAt, &user.DateOfBirth)
 	if err == sql.ErrNoRows {
-		return nil, ErrNoMatch
+		return nil, errUserNoMatch
 	} else if err != nil {
 		return nil, err
 	}

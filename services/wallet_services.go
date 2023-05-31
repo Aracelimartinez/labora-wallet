@@ -12,8 +12,8 @@ type WalletService struct {
 var dbWalletHandler = &PostgresWalletDbHandler{Db: db.DbConn}
 var WS = &WalletService{DbHandler: dbWalletHandler}
 
-func (s *WalletService) CreateWallet(newWallet *models.Wallet,  log *models.Log) error {
-	return s.DbHandler.CreateWallet(newWallet, log)
+func (s *WalletService) CreateWallet(user *models.User,  log *models.Log) error {
+	return s.DbHandler.CreateWallet(user, log)
 }
 
 func (s *WalletService) GetWallet(id int) (*models.Wallet, error) {

@@ -28,6 +28,5 @@ func ValidateUser(user *User) error {
 	case user.DateOfBirth == "":
 		return errors.New("la fecha de nacimiento es obligatória")
 	}
-
 	return nil
 }
