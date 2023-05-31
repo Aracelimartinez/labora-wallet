@@ -34,10 +34,28 @@ func (p *PostgresUserDbHandler) CreateUser(newUser *models.User) error {
 	return nil
 }
 
-func (p *PostgresUserDbHandler) GetUser(id int) (models.User, error) {
 // Function to get the User info in PostgreSQL database
+func (p *PostgresUserDbHandler) GetUser(id int) (*models.User, error) {
 
-	return models.User{}, nil
+	var err error
+	var user models.User
+
+	stmt, err := db.DbConn.Prepare("SELECT * FROM users WHERE id = $1")
+	if err != nil {
+		return nil, err
+	}
+
+	defer stmt.Close()
+
+	row := stmt.QueryRow(id)
+	err = row.Scan(&user.ID, &user.UserName, &user.DocumentNumber, &user.DocumentType, &user.Country, &user.CreatedAt, &user.DateOfBirth)
+	if err == sql.ErrNoRows {
+		return nil, ErrNoMatch
+	} else if err != nil {
+		return nil, err
+	}
+
+	return &user, nil
 }
 
 // func (p *PostgresUserDbHandler) UpdateUser(user models.User) error {

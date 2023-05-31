@@ -20,18 +20,24 @@ type DbData struct {
 	RolPassword string
 }
 
+type Config struct {
+	DbData       DbData
+	TruoraAPIKey string
+}
+
 var DbConn *sql.DB
+var GlobalConfig Config
 
 // Open the conexion with the database
 func EstablishDbConnection() error {
 
-	dbData, err := LoadEnv()
+	config, err := LoadEnv()
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", dbData.Host, dbData.Port, dbData.RolName, dbData.RolPassword, dbData.DbName)
+	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", config.DbData.Host, config.DbData.Port, config.DbData.RolName, config.DbData.RolPassword, config.DbData.DbName)
 
 	db, err := sql.Open("postgres", psqlInfo)
 	if err != nil {
@@ -51,21 +57,29 @@ func EstablishDbConnection() error {
 }
 
 // Load the data of the .env file
-func LoadEnv() (DbData, error) {
+func LoadEnv() (Config, error) {
 	var err error
 
 	if err = godotenv.Load(".env"); err != nil {
 		log.Fatalf("Error al cargar el archivo .env: %v", err)
-		return DbData{}, err
+		return Config{}, err
 	}
 
-	return DbData{
-		Host:        os.Getenv("HOST"),
-		Port:        os.Getenv("PORT"),
-		DbName:      os.Getenv("DB_NAME"),
-		RolName:     os.Getenv("ROL_NAME"),
-		RolPassword: os.Getenv("ROL_PASSWORD"),
-	}, nil
+	var config Config
+
+	config = Config {
+		DbData: DbData {
+			Host:        os.Getenv("HOST"),
+			Port:        os.Getenv("PORT"),
+			DbName:      os.Getenv("DB_NAME"),
+			RolName:     os.Getenv("ROL_NAME"),
+			RolPassword: os.Getenv("ROL_PASSWORD"),
+		},
+		TruoraAPIKey: os.Getenv("TRUORA_API_KEY"),
+	}
+
+	GlobalConfig = config
+	return config, nil
 }
 
 // Start the server

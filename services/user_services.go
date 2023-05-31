@@ -16,7 +16,7 @@ func (s *UserService) CreateUser(user *models.User) error {
 	return s.DbHandler.CreateUser(user)
 }
 
-func (s *UserService) GetUser(id int) (models.User, error) {
+func (s *UserService) GetUser(id int) (*models.User, error) {
 	return s.DbHandler.GetUser(id)
 }
 

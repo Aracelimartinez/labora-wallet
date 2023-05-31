@@ -4,7 +4,7 @@ import "time"
 
 type TruoraPostResponse struct {
 	Check struct {
-		CheckID      string `json:"check_id"`
+		CheckID      string    `json:"check_id"`
 		CreationDate time.Time `json:"creation_date"`
 	} `json:"check"`
 }
@@ -23,4 +23,10 @@ type TruoraGetResponse struct {
 			Result   string `json:"result"`
 		} `json:"scores"`
 	} `json:"check"`
+}
+
+type TruoraErrorResponse struct {
+	Code     int    `json:"code"`
+	HttpCode int    `json:"http_code"`
+	Message  string `json:"message"`
 }

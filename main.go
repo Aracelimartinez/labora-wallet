@@ -35,7 +35,7 @@ func main() {
 
 	handler := corsOptions.Handler(router)
 
-	port := ":8000"
+	port := ":8080"
 	if err := db.StartServer(port, handler); err != nil {
 		log.Fatalf("Error starting server: %v", err)
 	}
