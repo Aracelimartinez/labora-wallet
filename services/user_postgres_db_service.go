@@ -51,7 +51,7 @@ func (p *PostgresUserDbHandler) GetUser(id int) (*models.User, error) {
 	defer stmt.Close()
 
 	row := stmt.QueryRow(id)
-	err = row.Scan(&user.ID, &user.UserName, &user.DocumentNumber, &user.DocumentType, &user.Country, &user.CreatedAt, &user.DateOfBirth)
+	err = row.Scan(&user.ID, &user.UserName, &user.DocumentNumber, &user.DocumentType, &user.Country,&user.DateOfBirth ,&user.CreatedAt)
 	if err == sql.ErrNoRows {
 		return nil, errUserNoMatch
 	} else if err != nil {

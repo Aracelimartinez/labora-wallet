@@ -11,8 +11,8 @@ type User struct {
 	DocumentNumber string    `json:"document_number"`
 	DocumentType   string    `json:"document_type"`
 	Country        string    `json:"country"`
-	CreatedAt      time.Time `json:"created_at"`
 	DateOfBirth    string    `json:"date_of_birth"`
+	CreatedAt      time.Time `json:"created_at"`
 }
 
 func ValidateUser(user *User) error {

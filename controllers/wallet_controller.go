@@ -35,6 +35,11 @@ func CreateWallet(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if logCreated.Approved == false {
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("La creación de su billetera no fue aprovada"))
+	}
+
 	err = services.WS.CreateWallet(user, &logCreated)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -95,5 +100,4 @@ func WalletStatus(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(wallet)
-
 }
