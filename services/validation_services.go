@@ -6,7 +6,6 @@ import (
 	"io/ioutil"
 	"labora-wallet/db"
 	"labora-wallet/models"
-	"log"
 	"net/http"
 	"strings"
 	"time"
@@ -115,9 +114,9 @@ func postTruoraAPIRequest(user *models.User) (string, error) {
 }
 
 // Function to create a GET request in Truora API
-func getTruoraAPIRequest(checkID string) (int, error) {
+func getTruoraAPIRequest(checkID string) (float64, error) {
 
-	req, err := http.NewRequest("GET", baseUrl +"/" + checkID, strings.NewReader(""))
+	req, err := http.NewRequest("GET", baseUrl+"/"+checkID, strings.NewReader(""))
 	if err != nil {
 		return 0, fmt.Errorf("error al crear la solicitud GET para Truora API: %w", err)
 	}
@@ -173,8 +172,6 @@ func setUserBodyRequest(user *models.User) (*strings.Reader, error) {
 
 		dateOfBirth := t.Format("02012006")
 
-		log.Println(dateOfBirth)
-
 		userInfo = strings.NewReader(fmt.Sprintf("national_id=%s&country=%s&type=person&date_of_birth=%s&user_authorized=true&force_creation=true", user.DocumentNumber, user.Country, dateOfBirth))
 
 	} else {
@@ -185,7 +182,7 @@ func setUserBodyRequest(user *models.User) (*strings.Reader, error) {
 }
 
 // Function to obtain the criminal records score
-func getScoreForCriminalRecords(checkResult *models.TruoraGetResponse) (int, error) {
+func getScoreForCriminalRecords(checkResult *models.TruoraGetResponse) (float64, error) {
 	for _, score := range checkResult.Check.Scores {
 		if score.DataSet == "criminal_record" {
 			return score.Score, nil

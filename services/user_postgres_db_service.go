@@ -22,14 +22,14 @@ func (p *PostgresUserDbHandler) CreateUser(newUser *models.User) error {
 		return err
 	}
 
-	stmt, err := db.DbConn.Prepare("INSERT INTO public.users(user_name, document_number, document_type, country) VALUES ($1, $2, $3, $4)")
+	stmt, err := db.DbConn.Prepare("INSERT INTO public.users(user_name, document_number, document_type, country, date_of_birth) VALUES ($1, $2, $3, $4, $5)")
 	if err != nil {
 		return err
 	}
 
 	defer stmt.Close()
 
-	_, err = stmt.Exec(newUser.UserName, newUser.DocumentNumber, newUser.DocumentType, newUser.Country)
+	_, err = stmt.Exec(newUser.UserName, newUser.DocumentNumber, newUser.DocumentType, newUser.Country, newUser.DateOfBirth)
 	if err != nil {
 		return err
 	}
@@ -51,7 +51,7 @@ func (p *PostgresUserDbHandler) GetUser(id int) (*models.User, error) {
 	defer stmt.Close()
 
 	row := stmt.QueryRow(id)
-	err = row.Scan(&user.ID, &user.UserName, &user.DocumentNumber, &user.DocumentType, &user.Country,&user.DateOfBirth ,&user.CreatedAt)
+	err = row.Scan(&user.ID, &user.UserName, &user.DocumentNumber, &user.DocumentType, &user.Country, &user.DateOfBirth, &user.CreatedAt)
 	if err == sql.ErrNoRows {
 		return nil, errUserNoMatch
 	} else if err != nil {

@@ -15,12 +15,12 @@ type TruoraGetResponse struct {
 		Country       string    `json:"country"`
 		CreationDate  time.Time `json:"creation_date"`
 		PreviousCheck string    `json:"previous_check"`
-		Score         int       `json:"score"`
+		Score         float64   `json:"score"`
 		Scores        []struct {
-			DataSet  string `json:"data_set"`
-			Severity string `json:"severity"`
-			Score    int    `json:"score"`
-			Result   string `json:"result"`
+			DataSet  string  `json:"data_set"`
+			Severity string  `json:"severity"`
+			Score    float64 `json:"score"`
+			Result   string  `json:"result"`
 		} `json:"scores"`
 	} `json:"check"`
 }
