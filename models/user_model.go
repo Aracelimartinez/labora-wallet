@@ -30,3 +30,4 @@ func ValidateUser(user *User) error {
 	}
 	return nil
 }
+

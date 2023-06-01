@@ -21,13 +21,15 @@ CREATE TABLE IF NOT EXISTS logs (
 
 CREATE TABLE IF NOT EXISTS wallets (
   id SERIAL PRIMARY KEY,
+  account_number INT NOT NULL,
   balance DECIMAL(10, 2) DEFAULT 0.00,
   currency VARCHAR(15),
   log_id INT NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT fk_log_wallet FOREIGN KEY (log_id)
     REFERENCES logs (id)
-    ON DELETE CASCADE
+    ON DELETE CASCADE,
+  CONSTRAINT unique_account_number UNIQUE (account_number)
 );
 
 CREATE TABLE IF NOT EXISTS transactions (

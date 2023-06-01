@@ -17,3 +17,7 @@ type DbUserHandler interface {
 type DbLogHandler interface {
 	CreateLog(user *User, canCreate bool) (Log, error)
 }
+
+type DbTransactionHandler interface {
+	
+}
