@@ -23,44 +23,40 @@ func (p *PostgresTransactionDbHandler) CreateTransaction(newTransaction *models.
 		return err
 	}
 
-	tx, err := db.DbConn.Begin()
-	if err != nil {
-		return fmt.Errorf("error al iniciar la transacción: %w", err)
-	}
-
 	err = executeTransaction(newTransaction)
 	if err != nil && err != errInsuficientBalanceFounds {
+
 		return fmt.Errorf("error al ejecutar la transacción: %w", err)
 	}
 
-	newTransaction.Approved = true
+	if err == errInsuficientBalanceFounds {
+		newTransaction.Approved = false
+	} else {
+		newTransaction.Approved = true
+	}
 
-	stmt, err := p.Db.Prepare("INSERT INTO public.transaction(user_name, document_number, document_type, country, date_of_birth) VALUES ($1, $2, $3, $4, $5)")
+	stmt, err := db.DbConn.Prepare("INSERT INTO public.transactions(senders_wallet_id, receiver_wallet_id, type, amount, date, approved) VALUES ($1, $2, $3, $4, $5, $6)")
 	if err != nil {
+
+		return err
+	}
+
+	_, err = stmt.Exec(newTransaction.SenderWalletID, newTransaction.ReceiverWalletID, newTransaction.Type, newTransaction.Amount, newTransaction.Date, newTransaction.Approved)
+	if err != nil {
+
 		return err
 	}
 
 	defer stmt.Close()
 
-	_, err = stmt.Exec(newTransaction)
-	if err != nil {
-		return err
-	}
-
-	defer tx.Rollback()
-	err = tx.Commit()
-	if err != nil {
-		return fmt.Errorf("error al hacer commit de la transacción: %w", err)
-	}
-
-	if newTransaction.Approved {
+	if !newTransaction.Approved {
 		return errInsuficientBalanceFounds
 	}
 
 	return nil
 }
 
-func executeTransaction(newTransaction *models.Transaction) error {
+func executeTransaction( newTransaction *models.Transaction) error {
 	WalletMutex.Lock()
 	defer WalletMutex.Unlock()
 
@@ -75,18 +71,18 @@ func executeTransaction(newTransaction *models.Transaction) error {
 			return fmt.Errorf("error al localizar la billetera que recibirá la transferencia: %w", err)
 		}
 
-		err = movement("Retiro", newTransaction.Amount, senderWallet)
+		err = movementInTransaction("Retiro", newTransaction.Amount, senderWallet)
 		if err != nil {
 			return err
 		}
 
-		err = movement("Depósito", newTransaction.Amount, receiverWallet)
+		err = movementInTransaction("Depósito", newTransaction.Amount, receiverWallet)
 		if err != nil {
 			return err
 		}
 
 	} else {
-		err = movement(newTransaction.Type, newTransaction.Amount, senderWallet)
+		err = movementInTransaction( newTransaction.Type, newTransaction.Amount, senderWallet)
 		if err != nil {
 			return err
 		}
@@ -94,7 +90,7 @@ func executeTransaction(newTransaction *models.Transaction) error {
 	return nil
 }
 
-func movement(transactionType string, transactionAmount float64, wallet *models.Wallet) error {
+func movementInTransaction(transactionType string, transactionAmount float64, wallet *models.Wallet) error {
 	var err error
 	var newBalance float64
 
@@ -108,7 +104,7 @@ func movement(transactionType string, transactionAmount float64, wallet *models.
 		}
 	}
 
-	WS.UpdateWalletBalance(newBalance, wallet)
+	WS.UpdateWalletBalance( newBalance, wallet)
 	if err != nil {
 		return fmt.Errorf("error al actualizar el balance de la billetera: %w", err)
 	}

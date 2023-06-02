@@ -40,7 +40,7 @@ func (transaction *Transaction) ValidateTransactionInfo() error {
 func (transaction *Transaction) ValidateTransactionType() error {
 
 	if transaction.Type != "Retiro" && transaction.Type != "Transferencia" && transaction.Type != "Depósito" {
-		err := errors.New("Por favor inserte un tipo de transaction válido: Retiro, Depósito o Transferencia ")
+		err := errors.New("por favor inserte un tipo de transaction válido: Retiro, Depósito o Transferencia ")
 		return err
 	}
 	return nil
@@ -54,8 +54,8 @@ func (transaction *Transaction) ValidateTransactionDate() error {
 	}
 	now := time.Now()
 
-	if !t.Before(now) {
-		err = errors.New("Fecha de transacción inválida")
+	if t.Before(now) {
+		err = errors.New("fecha de transacción inválida")
 		return err
 	}
 	return nil
@@ -64,7 +64,7 @@ func (transaction *Transaction) ValidateTransactionDate() error {
 func (transaction *Transaction) validateTransferType() error {
 	var err error
 	if transaction.Type == "Transferencia" && transaction.ReceiverWalletID == 0 {
-		err = errors.New("La billetera que recibirá la transferencia es obligatoria")
+		err = errors.New("la billetera que recibirá la transferencia es obligatoria")
 		return err
 	}
 	return nil

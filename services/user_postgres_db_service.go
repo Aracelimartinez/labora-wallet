@@ -3,6 +3,7 @@ package services
 import (
 	"database/sql"
 	"errors"
+	"labora-wallet/db"
 	"labora-wallet/models"
 )
 
@@ -42,7 +43,7 @@ func (p *PostgresUserDbHandler) GetUser(id int) (*models.User, error) {
 	var err error
 	var user models.User
 
-	stmt, err := p.Db.Prepare("SELECT * FROM users WHERE id = $1")
+	stmt, err := db.DbConn.Prepare("SELECT * FROM users WHERE id = $1")
 	if err != nil {
 		return nil, err
 	}

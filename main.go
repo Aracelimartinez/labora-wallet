@@ -20,7 +20,6 @@ func main() {
 
 	//Wallet endpoints
 	router.HandleFunc("/CreateWallet", controllers.CreateWallet).Methods("POST")
-	// router.HandleFunc("/UpdateWallet", controllers.UpdateWallet).Methods("PUT")
 	router.HandleFunc("/DeleteWallet", controllers.DeleteWallet).Methods("DELETE")
 	router.HandleFunc("/WalletStatus/{id}", controllers.WalletStatus).Methods("GET")
 

@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"labora-wallet/db"
 	"labora-wallet/models"
 	"sync"
 )
@@ -46,7 +47,7 @@ func (p *PostgresWalletDbHandler) WalletStatus(id int) (*models.Wallet, error) {
 	var err error
 	var wallet models.Wallet
 
-	stmt, err := p.Db.Prepare("SELECT * FROM wallets WHERE id = $1")
+	stmt, err := db.DbConn.Prepare("SELECT * FROM wallets WHERE id = $1")
 	if err != nil {
 		return nil, err
 	}
@@ -68,7 +69,7 @@ func (p *PostgresWalletDbHandler) WalletStatus(id int) (*models.Wallet, error) {
 func (p *PostgresWalletDbHandler) UpdateWalletBalance(newBalance float64, wallet *models.Wallet) error {
 	var err error
 
-	stmt, err := p.Db.Prepare("UPDATE wallets	SET balance = $1 WHERE id = $2")
+	stmt, err := db.DbConn.Prepare("UPDATE wallets SET balance = $1 WHERE id = $2")
 	if err != nil {
 		return err
 	}
@@ -87,7 +88,7 @@ func (p *PostgresWalletDbHandler) UpdateWalletBalance(newBalance float64, wallet
 func (p *PostgresWalletDbHandler) DeleteWallet(id int) error {
 	var err error
 
-	stmt, err := p.Db.Prepare("DELETE FROM wallets WHERE id = $1")
+	stmt, err := db.DbConn.Prepare("DELETE FROM wallets WHERE id = $1")
 	if err != nil {
 		return err
 	}
