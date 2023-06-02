@@ -20,12 +20,15 @@ func main() {
 
 	//Wallet endpoints
 	router.HandleFunc("/CreateWallet", controllers.CreateWallet).Methods("POST")
-	router.HandleFunc("/UpdateWallet", controllers.UpdateWallet).Methods("PUT")
+	// router.HandleFunc("/UpdateWallet", controllers.UpdateWallet).Methods("PUT")
 	router.HandleFunc("/DeleteWallet", controllers.DeleteWallet).Methods("DELETE")
-	router.HandleFunc("/WalletStatus", controllers.WalletStatus).Methods("GET")
+	router.HandleFunc("/WalletStatus/{id}", controllers.WalletStatus).Methods("GET")
 
 	//User endpoints
 	router.HandleFunc("/CreateUser", controllers.CreateUser).Methods("POST")
+
+	//Transaction endpoints
+	router.HandleFunc("/transaction", controllers.CreateTransaction).Methods("POST")
 
 	// Configurate the middleware CORS
 	corsOptions := cors.New(cors.Options{

@@ -11,3 +11,7 @@ type TransactionService struct {
 
 var dbTransactionHandler = &PostgresTransactionDbHandler{Db: db.DbConn}
 var TS = &TransactionService{DbHandler: dbTransactionHandler}
+
+func (s *TransactionService) CreateTransaction(newTransaction *models.Transaction) error {
+	return s.DbHandler.CreateTransaction(newTransaction)
+}

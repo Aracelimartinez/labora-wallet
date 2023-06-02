@@ -20,8 +20,8 @@ func (s *WalletService) GetWallet(id int) (*models.Wallet, error) {
 	return s.DbHandler.WalletStatus(id)
 }
 
-func (s *WalletService) UpdateWallet(wallet *models.Wallet) error {
-	return s.DbHandler.UpdateWallet(wallet)
+func (s *WalletService) UpdateWalletBalance(newBalance float64, wallet *models.Wallet) error {
+	return s.DbHandler.UpdateWalletBalance(newBalance, wallet)
 }
 
 func (s *WalletService) DeleteWallet(id int) error {

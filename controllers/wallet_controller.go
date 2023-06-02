@@ -35,7 +35,7 @@ func CreateWallet(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if logCreated.Approved == false {
+	if !logCreated.Approved {
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("La creación de su billetera no fue aprovada"))
 	}
@@ -52,9 +52,9 @@ func CreateWallet(w http.ResponseWriter, r *http.Request) {
 }
 
 // Function to update a wallet
-func UpdateWallet(w http.ResponseWriter, r *http.Request) {
+// func UpdateWallet(w http.ResponseWriter, r *http.Request) {
 
-}
+// }
 
 // Function to delete a wallet
 func DeleteWallet(w http.ResponseWriter, r *http.Request) {
@@ -89,6 +89,11 @@ func WalletStatus(w http.ResponseWriter, r *http.Request) {
 	var err error
 	params := mux.Vars(r)
 	idWallet, err := strconv.Atoi(params["id"])
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		w.Write([]byte("Error al convertir id a entero"))
+		return
+	}
 
 	wallet, err := services.WS.GetWallet(idWallet)
 

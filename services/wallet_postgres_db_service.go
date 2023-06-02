@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"labora-wallet/db"
 	"labora-wallet/models"
 	"sync"
 )
@@ -14,18 +13,18 @@ type PostgresWalletDbHandler struct {
 }
 
 var errWalletNoMatch = errors.New("billetera no encontrada: Este id no existe")
-var walletMutex sync.Mutex
+var WalletMutex sync.Mutex
 
 // Function to create a wallet in PostgreSQL database
 func (p *PostgresWalletDbHandler) CreateWallet(user *models.User, log *models.Log) error {
 	var err error
 	var newWallet models.Wallet
-	walletMutex.Lock()
+	WalletMutex.Lock()
 	newWallet.AccountNumber = models.GenerateUniqueAccountNumber()
 	newWallet.Currency = models.SetCurrencyByCountry(user.Country)
 	newWallet.LogID = log.ID
 
-	stmt, err := db.DbConn.Prepare("INSERT INTO public.wallets(account_number, currency, log_id) VALUES ($1, $2, $3)")
+	stmt, err := p.Db.Prepare("INSERT INTO public.wallets(account_number, currency, log_id) VALUES ($1, $2, $3)")
 	if err != nil {
 		return err
 	}
@@ -37,7 +36,7 @@ func (p *PostgresWalletDbHandler) CreateWallet(user *models.User, log *models.Lo
 		return err
 	}
 
-	walletMutex.Unlock()
+	WalletMutex.Unlock()
 
 	return nil
 }
@@ -47,7 +46,7 @@ func (p *PostgresWalletDbHandler) WalletStatus(id int) (*models.Wallet, error) {
 	var err error
 	var wallet models.Wallet
 
-	stmt, err := db.DbConn.Prepare("SELECT * FROM wallets WHERE id = $1")
+	stmt, err := p.Db.Prepare("SELECT * FROM wallets WHERE id = $1")
 	if err != nil {
 		return nil, err
 	}
@@ -65,8 +64,21 @@ func (p *PostgresWalletDbHandler) WalletStatus(id int) (*models.Wallet, error) {
 	return &wallet, nil
 }
 
-// Function to update a wallet in PostgreSQL database
-func (p *PostgresWalletDbHandler) UpdateWallet(wallet *models.Wallet) error {
+// Function to update a wallet balance in PostgreSQL database
+func (p *PostgresWalletDbHandler) UpdateWalletBalance(newBalance float64, wallet *models.Wallet) error {
+	var err error
+
+	stmt, err := p.Db.Prepare("UPDATE wallets	SET balance = $1 WHERE id = $2")
+	if err != nil {
+		return err
+	}
+
+	defer stmt.Close()
+
+	_, err = stmt.Exec(newBalance, wallet.ID)
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
@@ -75,7 +87,7 @@ func (p *PostgresWalletDbHandler) UpdateWallet(wallet *models.Wallet) error {
 func (p *PostgresWalletDbHandler) DeleteWallet(id int) error {
 	var err error
 
-	stmt, err := db.DbConn.Prepare("DELETE FROM wallets WHERE id = $1")
+	stmt, err := p.Db.Prepare("DELETE FROM wallets WHERE id = $1")
 	if err != nil {
 		return err
 	}

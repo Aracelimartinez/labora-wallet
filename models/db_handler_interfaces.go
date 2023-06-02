@@ -3,7 +3,7 @@ package models
 type DbWalletHandler interface {
 	CreateWallet(user *User,  log *Log) error
 	WalletStatus(id int) (*Wallet, error)
-	UpdateWallet(wallet *Wallet) error
+	UpdateWalletBalance(newBalance float64, wallet *Wallet) error
 	DeleteWallet(id int) error
 }
 
@@ -19,5 +19,5 @@ type DbLogHandler interface {
 }
 
 type DbTransactionHandler interface {
-	
+	CreateTransaction(newTransaction *Transaction) error
 }
