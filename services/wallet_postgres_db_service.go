@@ -111,3 +111,22 @@ func (p *PostgresWalletDbHandler) DeleteWallet(id int) error {
 
 	return nil
 }
+
+// Function to get the wallet and transactions status in PostgreSQL database
+func (p *PostgresWalletDbHandler) GetWalletAndTransactions(id int) (*models.WalletDTO, error) {
+	var err error
+	var walletInfo *models.WalletDTO
+
+	walletInfo.Wallet, err = WS.GetWallet(id)
+	if err != nil {
+		return nil, err
+	}
+
+	transactions, err := p.GetTransactionsByWalletID(id)
+	if err != nil {
+		return nil, err
+	}
+	walletInfo.Transactions = transactions
+
+	return walletInfo, nil
+}

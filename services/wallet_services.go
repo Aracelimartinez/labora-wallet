@@ -27,3 +27,7 @@ func (s *WalletService) UpdateWalletBalance(newBalance float64, wallet *models.W
 func (s *WalletService) DeleteWallet(id int) error {
 	return s.DbHandler.DeleteWallet(id)
 }
+
+func (s *WalletService) GetWalletAndTransactions(id int) (*models.WalletDTO, error) {
+	return s.DbHandler.GetWalletAndTransactions(id)
+}

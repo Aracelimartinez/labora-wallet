@@ -51,11 +51,6 @@ func CreateWallet(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Billetera creada con éxito!"))
 }
 
-// Function to update a wallet
-// func UpdateWallet(w http.ResponseWriter, r *http.Request) {
-
-// }
-
 // Function to delete a wallet
 func DeleteWallet(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
@@ -105,4 +100,29 @@ func WalletStatus(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(wallet)
+}
+
+func GetWalletAndTransactions(w http.ResponseWriter, r *http.Request)  {
+	w.Header().Set("Content-Type", "application/json")
+
+	var err error
+	params := mux.Vars(r)
+	idWallet, err := strconv.Atoi(params["id"])
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		w.Write([]byte("Error al convertir id a entero"))
+		return
+	}
+
+	walletInfo, err := services.WS.GetWalletAndTransactions(idWallet)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		w.Write([]byte("Error al obtener las informaciones de la billetera"))
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(walletInfo)
+
 }

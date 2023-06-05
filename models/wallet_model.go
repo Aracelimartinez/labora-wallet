@@ -13,6 +13,10 @@ type Wallet struct {
 	LogID         int     `json:"log_id"`
 	CreatedAt     string  `json:"created_at"`
 }
+type WalletDTO struct {
+	Wallet       *Wallet        `json:"id"`
+	Transactions []Transaction `json:"transactions"`
+}
 
 func SetCurrencyByCountry(country string) string {
 	var currency string
