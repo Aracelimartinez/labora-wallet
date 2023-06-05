@@ -14,6 +14,35 @@ type PostgresTransactionDbHandler struct {
 
 var errInsuficientBalanceFounds = errors.New("no possee suficiente dinero en su cuenta para realizar esta transacción")
 
+// Function to get transactions by wallet ID
+func (p *PostgresTransactionDbHandler) GetTransactionsByWalletID(walletID int) ([]models.Transaction, error) {
+	var err error
+	var transactions []models.Transaction
+
+	stmt, err := db.DbConn.Prepare("SELECT * FROM transactions WHERE sender_wallet_id = $1 OR receiver_wallet_id = $1")
+	if err != nil {
+		return nil, err
+	}
+
+	defer stmt.Close()
+
+	rows, err := stmt.Query(walletID)
+	if err != nil {
+		return nil, err
+	}
+
+	for rows.Next() {
+		var transaction models.Transaction
+		err = rows.Scan(&transaction.ID, &transaction.SenderWalletID, &transaction.ReceiverWalletID, &transaction.Type, &transaction.Amount, &transaction.Date, &transaction.Approved, &transaction.CreatedAt)
+		if err != nil {
+			return nil, err
+		}
+		transactions = append(transactions, transaction)
+	}
+
+	return transactions, nil
+}
+
 // Function to create a transaction in PostgreSQL database
 func (p *PostgresTransactionDbHandler) CreateTransaction(newTransaction *models.Transaction) error {
 	var err error
@@ -110,33 +139,4 @@ func movementInTransaction(transactionType string, transactionAmount float64, wa
 	}
 
 	return nil
-}
-
-// Function to get transactions by wallet ID
-func (p *PostgresWalletDbHandler) GetTransactionsByWalletID(walletID int) ([]models.Transaction, error) {
-	var err error
-	var transactions []models.Transaction
-
-	stmt, err := db.DbConn.Prepare("SELECT * FROM transactions WHERE sender_wallet_id = $1 OR receiver_wallet_id = $1")
-	if err != nil {
-		return nil, err
-	}
-
-	defer stmt.Close()
-
-	rows, err := stmt.Query(walletID)
-	if err != nil {
-		return nil, err
-	}
-
-	for rows.Next() {
-		var transaction models.Transaction
-		err = rows.Scan(&transaction.ID, &transaction.SenderWalletID, &transaction.ReceiverWalletID, &transaction.Type, &transaction.Amount, &transaction.Date, &transaction.Approved, &transaction.CreatedAt)
-		if err != nil {
-			return nil, err
-		}
-		transactions = append(transactions, transaction)
-	}
-
-	return transactions, nil
 }

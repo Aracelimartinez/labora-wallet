@@ -15,3 +15,7 @@ var TS = &TransactionService{DbHandler: dbTransactionHandler}
 func (s *TransactionService) CreateTransaction(newTransaction *models.Transaction) error {
 	return s.DbHandler.CreateTransaction(newTransaction)
 }
+
+func (s *TransactionService) GetTransactionsByWalletID(walletID int) ([]models.Transaction, error) {
+	return s.DbHandler.GetTransactionsByWalletID(walletID)
+}

@@ -5,7 +5,7 @@ type DbWalletHandler interface {
 	WalletStatus(id int) (*Wallet, error)
 	UpdateWalletBalance(newBalance float64, wallet *Wallet) error
 	DeleteWallet(id int) error
-	GetWalletAndTransactions(id int) (*WalletDTO, error)
+	GetWalletAndTransactions(id int) (WalletDTO, error)
 }
 
 type DbUserHandler interface {
@@ -21,4 +21,5 @@ type DbLogHandler interface {
 
 type DbTransactionHandler interface {
 	CreateTransaction(newTransaction *Transaction) error
+	GetTransactionsByWalletID(walletID int) ([]Transaction, error)
 }
